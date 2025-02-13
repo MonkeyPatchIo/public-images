@@ -1,0 +1,53 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# GitHub recommends pinning actions to a commit SHA.
+# To get a newer version, you will need to update the SHA.
+# You can also reference a tag or branch, but the action may change without warning.
+
+name: Publish Docker image
+
+on: workflow_dispatch
+
+jobs:
+  push_to_registry:
+    name: Republish some docker images
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Relay testcontainers/ryuk:0.5.1
+        env:
+          IMAGE: testcontainers/ryuk:0.5.1
+          TARGET: ghcr.io/monkeypatchio
+        run: |
+          docker pull ${{ env.IMAGE }}
+          docker tag ${{ env.IMAGE }} ${{ env.TARGET }}/${{ env.IMAGE }}
+          docker push ${{ env.TARGET }}/${{ env.IMAGE }}
+
+      - name: Relay postgres:16-alpine
+        env:
+          IMAGE: postgres:16-alpine
+          TARGET: ghcr.io/monkeypatchio
+        run: |
+          docker pull ${{ env.IMAGE }}
+          docker tag ${{ env.IMAGE }} ${{ env.TARGET }}/${{ env.IMAGE }}
+          docker push ${{ env.TARGET }}/${{ env.IMAGE }}
+
+      - name: Relay mockserver/mockserver:5.15.0
+        env:
+          IMAGE: mockserver/mockserver:5.15.0
+          TARGET: ghcr.io/monkeypatchio
+        run: |
+          docker pull ${{ env.IMAGE }}
+          docker tag ${{ env.IMAGE }} ${{ env.TARGET }}/${{ env.IMAGE }}
+          docker push ${{ env.TARGET }}/${{ env.IMAGE }}
+
