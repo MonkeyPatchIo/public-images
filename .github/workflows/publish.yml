@@ -51,3 +51,12 @@ jobs:
           docker tag ${{ env.IMAGE }} ${{ env.TARGET }}/${{ env.IMAGE }}
           docker push ${{ env.TARGET }}/${{ env.IMAGE }}
 
+      - name: Relay node:lts-alpine
+        env:
+          IMAGE: node:lts-alpine
+          TARGET: ghcr.io/monkeypatchio
+        run: |
+          docker pull ${{ env.IMAGE }}
+          docker tag ${{ env.IMAGE }} ${{ env.TARGET }}/${{ env.IMAGE }}
+          docker push ${{ env.TARGET }}/${{ env.IMAGE }}
+
